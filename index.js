@@ -7,7 +7,7 @@ function hello() {
 	console.log("hello from the other side");
 }
 
-function getStats() {
+function getInputs() {
 	var curNext, curSize;
 
 	if (runner.horizon.obstacles.length > 0) {
@@ -19,6 +19,50 @@ function getStats() {
 	}
 
 	return [runner.currentSpeed, curNext, curSize, runner.distanceRan/40];
+}
+
+function keyDownJump() {
+	if (!runner.crashed) {
+		if (!runner.playing) {
+			runner.loadSounds();
+			runner.playing = true;
+			runner.update();
+			if (window.errorPageController) {
+				errorPageController.trackEasterEgg();
+			}
+		}
+		//  Play sound effect and jump on starting the game for the first time.
+		if (!runner.tRex.jumping && !runner.tRex.ducking) {
+			runner.playSound(runner.soundFx.BUTTON_PRESS);
+			runner.tRex.startJump(runner.currentSpeed);
+		}
+	}
+}
+
+function keyDownDuck() {
+	if (runner.playing && !runner.crashed) {
+		if (runner.tRex.jumping) {
+			// Speed drop, activated only when jump key is not pressed.
+			runner.tRex.setSpeedDrop();
+		} else if (!runner.tRex.jumping && !runner.tRex.ducking) {
+			// Duck.
+			runner.tRex.setDuck(true);
+		}
+	}
+}
+
+function keyUpJump() {
+	if (runner.isRunning()) {
+		runner.tRex.endJump();
+	}
+}
+
+function keyUpDuck() {
+	runner.tRex.speedDrop = false;
+	runner.tRex.setDuck(false);
+}
+
+function restart() {
 }
 
 (function () {
@@ -687,22 +731,9 @@ function getStats() {
             }
 
             if (e.target != this.detailsButton) {
-                if (!this.crashed && (Runner.keycodes.JUMP[e.keyCode] ||
-                    e.type == Runner.events.TOUCHSTART)) {
-                    if (!this.playing) {
-                        this.loadSounds();
-                        this.playing = true;
-                        this.update();
-                        if (window.errorPageController) {
-                            errorPageController.trackEasterEgg();
-                        }
-                    }
-                    //  Play sound effect and jump on starting the game for the first time.
-                    if (!this.tRex.jumping && !this.tRex.ducking) {
-                        this.playSound(this.soundFx.BUTTON_PRESS);
-                        this.tRex.startJump(this.currentSpeed);
-                    }
-                }
+				if (Runner.keycodes.JUMP[e.keyCode]) {
+					keyDownJump();
+				}
 
                 if (this.crashed && e.type == Runner.events.TOUCHSTART &&
                     e.currentTarget == this.containerEl) {
@@ -710,16 +741,9 @@ function getStats() {
                 }
             }
 
-            if (this.playing && !this.crashed && Runner.keycodes.DUCK[e.keyCode]) {
-                e.preventDefault();
-                if (this.tRex.jumping) {
-                    // Speed drop, activated only when jump key is not pressed.
-                    this.tRex.setSpeedDrop();
-                } else if (!this.tRex.jumping && !this.tRex.ducking) {
-                    // Duck.
-                    this.tRex.setDuck(true);
-                }
-            }
+			if (Runner.keycodes.DUCK[e.keyCode]) {
+				pressDown();
+			}
         },
 
 
@@ -733,11 +757,10 @@ function getStats() {
                 e.type == Runner.events.TOUCHEND ||
                 e.type == Runner.events.MOUSEDOWN;
 
-            if (this.isRunning() && isjumpKey) {
-                this.tRex.endJump();
-            } else if (Runner.keycodes.DUCK[keyCode]) {
-                this.tRex.speedDrop = false;
-                this.tRex.setDuck(false);
+			if (isjumpKey) {
+				keyUpJump();
+			} else if (Runner.keycodes.DUCK[keyCode]) {
+				keyUpDuck();
             } else if (this.crashed) {
                 // Check that enough time has elapsed before allowing jump key to restart.
                 var deltaTime = getTimeStamp() - this.time;

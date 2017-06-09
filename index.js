@@ -2,6 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // extract from chromium source code by @liuwayong
+
+function hello() {
+	console.log("hello from the other side");
+}
+
+function getStats() {
+	var curNext, curSize;
+
+	if (runner.horizon.obstacles.length > 0) {
+		curNext = runner.horizon.obstacles[0].xPos;
+		curSize = runner.horizon.obstacles[0].width;
+	} else {
+		curNext = 100000;
+		curSize = 100000;
+	}
+
+	return [runner.currentSpeed, curNext, curSize, runner.distanceRan/40];
+}
+
 (function () {
     'use strict';
     /**
@@ -589,6 +608,9 @@
                     }
                 }
             }
+
+			document.getElementById("speedvar").innerHTML = "speed = " + this.currentSpeed;
+			document.getElementById("distvar").innerHTML = "dist = " + this.distanceRan/40;
 
             if (this.playing || (!this.activated &&
                 this.tRex.blinkCount < Runner.config.MAX_BLINK_COUNT)) {
@@ -2598,6 +2620,18 @@
             // Obstacles, move to Horizon layer.
             var updatedObstacles = this.obstacles.slice(0);
 
+			var curNext, curSize;
+
+			if (this.obstacles.length > 0) {
+				curNext = this.obstacles[0].xPos;
+				curSize = this.obstacles[0].width;
+			} else {
+				curNext = 100000;
+				curSize = 100000;
+			}
+			document.getElementById("nextvar").innerHTML = "next = " + curNext;
+			document.getElementById("sizevar").innerHTML = "size = " + curSize;
+
             for (var i = 0; i < this.obstacles.length; i++) {
                 var obstacle = this.obstacles[i];
                 obstacle.update(deltaTime, currentSpeed);
@@ -2702,9 +2736,10 @@
     };
 })();
 
+var runner;
 
 function onDocumentLoad() {
-    new Runner('.interstitial-wrapper');
+    runner = new Runner('.interstitial-wrapper');
 }
 
 document.addEventListener('DOMContentLoaded', onDocumentLoad);

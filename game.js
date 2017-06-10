@@ -3,68 +3,6 @@
 // found in the LICENSE file.
 // extract from chromium source code by @liuwayong
 
-function hello() {
-	console.log("hello from the other side");
-}
-
-function getInputs() {
-	var curNext, curSize;
-
-	if (runner.horizon.obstacles.length > 0) {
-		curNext = runner.horizon.obstacles[0].xPos;
-		curSize = runner.horizon.obstacles[0].width;
-	} else {
-		curNext = 100000;
-		curSize = 100000;
-	}
-
-	return [runner.currentSpeed, curNext, curSize, runner.distanceRan/40];
-}
-
-function keyDownJump() {
-	if (!runner.crashed) {
-		if (!runner.playing) {
-			runner.loadSounds();
-			runner.playing = true;
-			runner.update();
-			if (window.errorPageController) {
-				errorPageController.trackEasterEgg();
-			}
-		}
-		//  Play sound effect and jump on starting the game for the first time.
-		if (!runner.tRex.jumping && !runner.tRex.ducking) {
-			runner.playSound(runner.soundFx.BUTTON_PRESS);
-			runner.tRex.startJump(runner.currentSpeed);
-		}
-	}
-}
-
-function keyDownDuck() {
-	if (runner.playing && !runner.crashed) {
-		if (runner.tRex.jumping) {
-			// Speed drop, activated only when jump key is not pressed.
-			runner.tRex.setSpeedDrop();
-		} else if (!runner.tRex.jumping && !runner.tRex.ducking) {
-			// Duck.
-			runner.tRex.setDuck(true);
-		}
-	}
-}
-
-function keyUpJump() {
-	if (runner.isRunning()) {
-		runner.tRex.endJump();
-	}
-}
-
-function keyUpDuck() {
-	runner.tRex.speedDrop = false;
-	runner.tRex.setDuck(false);
-}
-
-function restart() {
-}
-
 (function () {
     'use strict';
     /**
@@ -655,6 +593,9 @@ function restart() {
 
 			document.getElementById("speedvar").innerHTML = "speed = " + this.currentSpeed;
 			document.getElementById("distvar").innerHTML = "dist = " + this.distanceRan/40;
+			document.getElementById("playingvar").innerHTML = "playing = " + this.playing;
+			document.getElementById("crashedvar").innerHTML = "crashed = " + this.crashed;
+			document.getElementById("pausedvar").innerHTML = "paused = " + this.paused;
 
             if (this.playing || (!this.activated &&
                 this.tRex.blinkCount < Runner.config.MAX_BLINK_COUNT)) {
@@ -731,9 +672,22 @@ function restart() {
             }
 
             if (e.target != this.detailsButton) {
-				if (Runner.keycodes.JUMP[e.keyCode]) {
-					keyDownJump();
-				}
+                if (!this.crashed && (Runner.keycodes.JUMP[e.keyCode] ||
+                    e.type == Runner.events.TOUCHSTART)) {
+                    if (!this.playing) {
+                        this.loadSounds();
+                        this.playing = true;
+                        this.update();
+                        if (window.errorPageController) {
+                            errorPageController.trackEasterEgg();
+                        }
+                    }
+                    //  Play sound effect and jump on starting the game for the first time.
+                    if (!this.tRex.jumping && !this.tRex.ducking) {
+                        this.playSound(this.soundFx.BUTTON_PRESS);
+                        this.tRex.startJump(this.currentSpeed);
+                    }
+                }
 
                 if (this.crashed && e.type == Runner.events.TOUCHSTART &&
                     e.currentTarget == this.containerEl) {
@@ -741,9 +695,16 @@ function restart() {
                 }
             }
 
-			if (Runner.keycodes.DUCK[e.keyCode]) {
-				pressDown();
-			}
+            if (this.playing && !this.crashed && Runner.keycodes.DUCK[e.keyCode]) {
+                e.preventDefault();
+                if (this.tRex.jumping) {
+                    // Speed drop, activated only when jump key is not pressed.
+                    this.tRex.setSpeedDrop();
+                } else if (!this.tRex.jumping && !this.tRex.ducking) {
+                    // Duck.
+                    this.tRex.setDuck(true);
+                }
+            }
         },
 
 
@@ -757,10 +718,11 @@ function restart() {
                 e.type == Runner.events.TOUCHEND ||
                 e.type == Runner.events.MOUSEDOWN;
 
-			if (isjumpKey) {
-				keyUpJump();
-			} else if (Runner.keycodes.DUCK[keyCode]) {
-				keyUpDuck();
+            if (this.isRunning() && isjumpKey) {
+                this.tRex.endJump();
+            } else if (Runner.keycodes.DUCK[keyCode]) {
+                this.tRex.speedDrop = false;
+                this.tRex.setDuck(false);
             } else if (this.crashed) {
                 // Check that enough time has elapsed before allowing jump key to restart.
                 var deltaTime = getTimeStamp() - this.time;
@@ -861,6 +823,7 @@ function restart() {
                 this.runningTime = 0;
                 this.playing = true;
                 this.crashed = false;
+				this.paused = false;
                 this.distanceRan = 0;
                 this.setSpeed(this.config.SPEED);
                 this.time = getTimeStamp();
@@ -2643,8 +2606,8 @@ function restart() {
             // Obstacles, move to Horizon layer.
             var updatedObstacles = this.obstacles.slice(0);
 
+			// MY OWN CODE **********************************
 			var curNext, curSize;
-
 			if (this.obstacles.length > 0) {
 				curNext = this.obstacles[0].xPos;
 				curSize = this.obstacles[0].width;
@@ -2654,6 +2617,7 @@ function restart() {
 			}
 			document.getElementById("nextvar").innerHTML = "next = " + curNext;
 			document.getElementById("sizevar").innerHTML = "size = " + curSize;
+			// **********************************************
 
             for (var i = 0; i < this.obstacles.length; i++) {
                 var obstacle = this.obstacles[i];

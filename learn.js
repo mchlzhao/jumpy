@@ -3,8 +3,8 @@ var Network = synaptic.Network;
 
 var FPS = 25;
 
-var GENERATION_SIZE = 16;
-var SELECT_SIZE = 6;
+var GENERATION_SIZE = 12;
+var SELECT_SIZE = 3;
 
 var DUCK_THRESHOLD = 0.45;
 var JUMP_THRESHOLD = 0.55;
@@ -75,27 +75,41 @@ function testGen() {
 	}
 }
 
-function nextGen() {
-	best.sort(function (a, b) {
-		return b[1] - a[1];
-	});
-	// console.log("best " + best);
+function pickRandGenome() {
+	var r = Math.random();
+	var sum = 0;
 	for (var i = 0; i < GENERATION_SIZE; i++) {
-		var a = randBetween(0, SELECT_SIZE);
-		var b = randBetween(0, SELECT_SIZE);
-		while (a == b) {
-			var b = randBetween(0, SELECT_SIZE);
+		sum += best[i][1] - 35;
+	}
+	var x = 0;
+	for (var i = 0; i < GENERATION_SIZE; i++) {
+		x += best[i][1] - 35;
+		if (x/sum > r) {
+			return i;
 		}
+	}
+	console.log("shouldn't happen");
+	return GENERATION_SIZE - 1;
+}
+
+function nextGen() {
+	for (var i = 0; i < GENERATION_SIZE; i++) {
+		var a = pickRandGenome();
+		var b = pickRandGenome();
 		var mutProb = 20/(best[a][1] + best[b][1]) + 0.15;
+
 		console.log("crossing over between " + best[a][0] + " and " + best[b][0]);
 		console.log("mutProb = " + mutProb);
+
 		genNext[i] = crossOver(gen[best[a][0]], gen[best[b][0]], "neurons", "bias");
 		genNext[i] = mutate(genNext[i], mutProb, "connections", "weight");
 		genNext[i] = mutate(genNext[i], mutProb, "neurons", "bias");
 	}
+
 	for (var i = 0; i < GENERATION_SIZE; i++) {
 		best[i] = [i, 0];
 	}
+
 	genNum++;
 	document.getElementById("genvar").innerHTML = "gen = " + genNum;
 	gen = genNext;

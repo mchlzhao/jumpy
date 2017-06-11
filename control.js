@@ -13,20 +13,26 @@ function getInputs() {
 		curNext = 1000;
 		curSize = 0;
 	}
-	return {
+	var ret = {
 		speed: runner.currentSpeed,
 		next: curNext,
-		size: curSize,
-		dist: runner.distanceRan/40
+		size: curSize
 	};
+	document.getElementById("speedvar").innerHTML = "speed = " + ret.speed;
+	document.getElementById("nextvar").innerHTML = "next = " + ret.next;
+	document.getElementById("sizevar").innerHTML = "size = " + ret.size;
+	return ret;
 }
 
 function getStates() {
-	return {
+	var ret = {
 		playing: runner.playing,
 		crashed: runner.crashed,
-		paused: runner.paused
+		paused: runner.paused,
+		dist: runner.distanceRan/40
 	};
+	document.getElementById("distvar").innerHTML = "dist = " + ret.dist;
+	return ret;
 }
 
 function keyDownJump() {

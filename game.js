@@ -591,12 +591,6 @@
                 }
             }
 
-			document.getElementById("speedvar").innerHTML = "speed = " + this.currentSpeed;
-			document.getElementById("distvar").innerHTML = "dist = " + this.distanceRan/40;
-			document.getElementById("playingvar").innerHTML = "playing = " + this.playing;
-			document.getElementById("crashedvar").innerHTML = "crashed = " + this.crashed;
-			document.getElementById("pausedvar").innerHTML = "paused = " + this.paused;
-
             if (this.playing || (!this.activated &&
                 this.tRex.blinkCount < Runner.config.MAX_BLINK_COUNT)) {
                 this.tRex.update(deltaTime);
@@ -1711,7 +1705,6 @@
             } else {
                 // Crashed whilst ducking. Trex is standing up so needs adjustment.
                 if (this.ducking && this.status == Trex.status.CRASHED) {
-                    this.xPos++;
                 }
                 // Standing / running
                 this.canvasCtx.drawImage(Runner.imageSprite, sourceX, sourceY,
@@ -2605,19 +2598,6 @@
         updateObstacles: function (deltaTime, currentSpeed) {
             // Obstacles, move to Horizon layer.
             var updatedObstacles = this.obstacles.slice(0);
-
-			// MY OWN CODE **********************************
-			var curNext, curSize;
-			if (this.obstacles.length > 0) {
-				curNext = this.obstacles[0].xPos;
-				curSize = this.obstacles[0].width;
-			} else {
-				curNext = 100000;
-				curSize = 100000;
-			}
-			document.getElementById("nextvar").innerHTML = "next = " + curNext;
-			document.getElementById("sizevar").innerHTML = "size = " + curSize;
-			// **********************************************
 
             for (var i = 0; i < this.obstacles.length; i++) {
                 var obstacle = this.obstacles[i];

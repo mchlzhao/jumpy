@@ -96,7 +96,7 @@ function nextGen() {
 	for (var i = 0; i < GENERATION_SIZE; i++) {
 		var a = pickRandGenome();
 		var b = pickRandGenome();
-		var mutProb = 20/(best[a][1] + best[b][1]) + 0.15;
+		var mutProb = 20/((best[a][1] + best[b][1])/2 + 0.12);
 		console.log("crossing over between " + best[a][0] + " and " + best[b][0]);
 		console.log("mutProb = " + mutProb);
 		genNext[i] = crossOver(gen[best[a][0]], gen[best[b][0]], "neurons", "bias");

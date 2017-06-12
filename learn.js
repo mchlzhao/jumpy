@@ -19,11 +19,22 @@ for (var i = 0; i < GENERATION_SIZE; i++) {
 	gen.push(new Architect.Perceptron(4, 5, 1));
 	gen[i] = mutate(gen[i], 1, "connections", "weight");
 	gen[i] = mutate(gen[i], 1, "neurons", "bias");
+	gen[i] = toRELU(gen[i]);
 	genNext.push(gen[i]);
 }
 
 for (var i = 0; i < GENERATION_SIZE; i++) {
 	best.push([i, 0]);
+}
+
+function toRELU(a) {
+	a = a.toJSON();
+	for (var i = 0; i < a.neurons.length; i++) {
+		if (a.neurons[i].layer != "input" && a.neurons[i].layer != "output") {
+			a.neurons[i].squash = "RELU";
+		}
+	}
+	return Network.fromJSON(a);
 }
 
 function randBetween(a, b) {

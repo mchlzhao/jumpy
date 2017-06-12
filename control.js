@@ -1,13 +1,7 @@
-// functions to control the game
-
-function hello() {
-	console.log("hello from the other side");
-}
-
 function getInputs() {
 	var curNext, curSize, curHeight;
 	if (runner.horizon.obstacles.length > 0) {
-		curNext = runner.horizon.obstacles[0].xPos;
+		curNext = runner.horizon.obstacles[0].xPos+200;
 		curSize = runner.horizon.obstacles[0].width;
 		curHeight = runner.horizon.obstacles[0].yPos;
 	} else {
@@ -17,14 +11,16 @@ function getInputs() {
 	}
 	var ret = {
 		speed: runner.currentSpeed/14,
-		next: curNext/1000,
+		next: 1-curNext/1000,
 		size: curSize/100,
 		height: curHeight/105
 	};
-	document.getElementById("speedvar").innerHTML = "speed = " + ret.speed;
-	document.getElementById("nextvar").innerHTML = "next = " + ret.next;
-	document.getElementById("sizevar").innerHTML = "size = " + ret.size;
-	document.getElementById("heightvar").innerHTML = "height = " + ret.height;
+	ret.size *= ret.next;
+	ret.height *= ret.next;
+	document.getElementById("speedvar").innerHTML = "speed = " + ret.speed.toFixed(4);
+	document.getElementById("nextvar").innerHTML = "next = " + ret.next.toFixed(4);
+	document.getElementById("sizevar").innerHTML = "size = " + ret.size.toFixed(4);
+	document.getElementById("heightvar").innerHTML = "height = " + ret.height.toFixed(4);
 	return ret;
 }
 
@@ -35,7 +31,7 @@ function getStates() {
 		paused: runner.paused,
 		dist: runner.distanceRan/40
 	};
-	document.getElementById("distvar").innerHTML = "dist = " + ret.dist;
+	document.getElementById("distvar").innerHTML = "dist = " + ret.dist.toFixed(4);
 	return ret;
 }
 

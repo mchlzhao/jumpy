@@ -6,8 +6,8 @@ var FPS = 25;
 var GENERATION_SIZE = 20;
 var SELECT_SIZE = 3;
 
-var DUCK_THRESHOLD = 0.45;
-var JUMP_THRESHOLD = 0.55;
+var DUCK_THRESHOLD = 0.4;
+var JUMP_THRESHOLD = 0.6;
 
 var gen = [];
 var genNext = [];
@@ -43,8 +43,8 @@ function randBetween(a, b) {
 
 function makeMove() {
 	var z = getInputs();
-	var networkOutput = gen[indNum].activate([z.speed, z.next, z.size, z.height]);
-	document.getElementById("outputvar").innerHTML = networkOutput;
+	var networkOutput = gen[indNum].activate([z.speed, z.next, z.size, z.height])[0];
+	document.getElementById("outputvar").innerHTML = networkOutput.toFixed(4);
 	if (networkOutput < DUCK_THRESHOLD) {
 		keyUpJump();
 		keyDownDuck();

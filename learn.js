@@ -16,7 +16,7 @@ var indNum = 0;
 var genNum = 0;
 
 for (var i = 0; i < GENERATION_SIZE; i++) {
-	gen.push(new Architect.Perceptron(4, 5, 5, 1));
+	gen.push(new Architect.Perceptron(4, 5, 1));
 	gen[i] = mutate(gen[i], 1, "connections", "weight");
 	gen[i] = mutate(gen[i], 1, "neurons", "bias");
 	genNext.push(gen[i]);
@@ -78,12 +78,12 @@ function testGen() {
 function pickRandGenome() {
 	var sum = 0;
 	for (var i = 0; i < GENERATION_SIZE; i++) {
-		sum += best[i][1] - 35;
+		sum += best[i][1];
 	}
 	var r = randBetween(0, sum);
 	var x = 0;
 	for (var i = 0; i < GENERATION_SIZE; i++) {
-		x += best[i][1] - 35;
+		x += best[i][1];
 		if (x > r) {
 			return i;
 		}
@@ -96,7 +96,7 @@ function nextGen() {
 	for (var i = 0; i < GENERATION_SIZE; i++) {
 		var a = pickRandGenome();
 		var b = pickRandGenome();
-		var mutProb = 20/((best[a][1] + best[b][1])/2 + 0.12);
+		var mutProb = 50/((best[a][1]+best[b][1])/2+108)+0.0538;
 		console.log("crossing over between " + best[a][0] + " and " + best[b][0]);
 		console.log("mutProb = " + mutProb);
 		genNext[i] = crossOver(gen[best[a][0]], gen[best[b][0]], "neurons", "bias");

@@ -5,22 +5,26 @@ function hello() {
 }
 
 function getInputs() {
-	var curNext, curSize;
+	var curNext, curSize, curHeight;
 	if (runner.horizon.obstacles.length > 0) {
 		curNext = runner.horizon.obstacles[0].xPos;
 		curSize = runner.horizon.obstacles[0].width;
+		curHeight = runner.horizon.obstacles[0].yPos;
 	} else {
 		curNext = 1000;
 		curSize = 0;
+		curHeight = 0;
 	}
 	var ret = {
-		speed: runner.currentSpeed,
-		next: curNext,
-		size: curSize
+		speed: runner.currentSpeed/14,
+		next: curNext/1000,
+		size: curSize/100,
+		height: curHeight/105
 	};
 	document.getElementById("speedvar").innerHTML = "speed = " + ret.speed;
 	document.getElementById("nextvar").innerHTML = "next = " + ret.next;
 	document.getElementById("sizevar").innerHTML = "size = " + ret.size;
+	document.getElementById("heightvar").innerHTML = "height = " + ret.height;
 	return ret;
 }
 

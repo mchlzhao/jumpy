@@ -129,7 +129,7 @@ function mutate(a, f, x, y) {
 	a = a.toJSON();
 	for (var i = 0; i < a[x].length; i++) {
 		if (Math.random() < f) {
-			a[x][i][y] += Math.random()*2 - 1;
+			a[x][i][y] = Math.random()*2 - 1;
 		}
 	}
 	return Network.fromJSON(a);

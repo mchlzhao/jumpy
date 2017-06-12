@@ -17,24 +17,22 @@ var genNum = 0;
 
 for (var i = 0; i < GENERATION_SIZE; i++) {
 	gen.push(new Architect.Perceptron(4, 5, 1));
+	gen[i] = gen[i].toJSON();
 	gen[i] = mutate(gen[i], 1, "connections", "weight");
 	gen[i] = mutate(gen[i], 1, "neurons", "bias");
 	gen[i] = toRELU(gen[i]);
-	genNext.push(gen[i]);
-}
-
-for (var i = 0; i < GENERATION_SIZE; i++) {
+	gen[i] = Network.fromJSON(gen[i]);
+	genNext.push(0);
 	best.push([i, 0]);
 }
 
 function toRELU(a) {
-	a = a.toJSON();
 	for (var i = 0; i < a.neurons.length; i++) {
 		if (a.neurons[i].layer != "input" && a.neurons[i].layer != "output") {
 			a.neurons[i].squash = "RELU";
 		}
 	}
-	return Network.fromJSON(a);
+	return a;
 }
 
 function randBetween(a, b) {
@@ -70,6 +68,8 @@ function testGen() {
 			if (indNum >= GENERATION_SIZE) {
 				nextGen();
 				indNum = 0;
+				genNum++;
+				document.getElementById("genvar").innerHTML = "gen = " + genNum;
 			}
 			restart();
 			hasRestarted = true;
@@ -110,21 +110,17 @@ function nextGen() {
 		var mutProb = 50/((best[a][1]+best[b][1])/2+108)+0.0538;
 		console.log("crossing over between " + best[a][0] + " and " + best[b][0]);
 		console.log("mutProb = " + mutProb);
-		genNext[i] = crossOver(gen[best[a][0]], gen[best[b][0]], "neurons", "bias");
+		genNext[i] = crossOver(gen[best[a][0]].toJSON(), gen[best[b][0]].toJSON(), "neurons", "bias");
 		genNext[i] = mutate(genNext[i], mutProb, "connections", "weight");
 		genNext[i] = mutate(genNext[i], mutProb, "neurons", "bias");
 	}
 	for (var i = 0; i < GENERATION_SIZE; i++) {
+		gen[i] = Network.fromJSON(genNext[i]);
 		best[i] = [i, 0];
 	}
-	genNum++;
-	document.getElementById("genvar").innerHTML = "gen = " + genNum;
-	gen = genNext;
 }
 
 function crossOver(a, b, x, y) {
-	a = a.toJSON();
-	b = b.toJSON();
 	if (Math.random() < 0.5) {
 		var temp = a;
 		a = b;
@@ -133,20 +129,20 @@ function crossOver(a, b, x, y) {
 	var c = b;
 	var p = randBetween(0, a[x].length+1);
 	c[x] = a[x].slice(0, p).concat(b[x].slice(p, b[x].length));
-	return Network.fromJSON(c);
+	return c;
 }
 
 function mutate(a, f, x, y) {
-	a = a.toJSON();
 	for (var i = 0; i < a[x].length; i++) {
 		if (Math.random() < f) {
 			a[x][i][y] = Math.random()*2 - 1;
 		}
 	}
-	return Network.fromJSON(a);
+	return a;
 }
 
 function onDocumentLoad() {
 	setTimeout(testGen, 1000);
 }
+
 document.addEventListener("DOMContentLoaded", onDocumentLoad);

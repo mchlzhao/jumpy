@@ -135,7 +135,7 @@ function crossOver(a, b, x, y) {
 function mutate(a, f, x, y) {
 	for (var i = 0; i < a[x].length; i++) {
 		if (Math.random() < f) {
-			a[x][i][y] = Math.random()*2 - 1;
+			a[x][i][y] += Math.random()*2*f - f;
 		}
 	}
 	return a;

@@ -3,7 +3,7 @@ function getInputs() {
 	if (runner.horizon.obstacles.length > 0) {
 		curNext = runner.horizon.obstacles[0].xPos+200;
 		curSize = runner.horizon.obstacles[0].width;
-		curHeight = runner.horizon.obstacles[0].yPos;
+		curHeight = runner.horizon.obstacles[0].yPos-50;
 	} else {
 		curNext = 1000;
 		curSize = 0;
@@ -13,7 +13,7 @@ function getInputs() {
 		speed: runner.currentSpeed/14,
 		next: 1-curNext/1000,
 		size: curSize/100,
-		height: curHeight/105
+		height: curHeight/55
 	};
 	ret.size *= ret.next;
 	ret.height *= ret.next;

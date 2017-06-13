@@ -1,7 +1,11 @@
 function getInputs() {
 	var curNext, curSize;
 	if (runner.horizon.obstacles.length > 0) {
-		curNext = runner.horizon.obstacles[0].xPos+200;
+		if (runner.horizon.obstacles[0].yPos == 50) {
+			curNext = 1000;
+		} else {
+			curNext = runner.horizon.obstacles[0].xPos+200;
+		}
 		curSize = runner.horizon.obstacles[0].width;
 	} else {
 		curNext = 1000;

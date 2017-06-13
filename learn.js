@@ -20,6 +20,7 @@ for (var i = 0; i < GENERATION_SIZE; i++) {
 	gen[i] = gen[i].toJSON();
 	gen[i] = mutate(gen[i], 1, "connections", "weight");
 	gen[i] = mutate(gen[i], 1, "neurons", "bias");
+	gen[i] = toRELU(gen[i]);
 	gen[i] = Network.fromJSON(gen[i]);
 	genNext.push(0);
 	best.push([i, 0]);

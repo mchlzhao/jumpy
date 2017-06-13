@@ -16,7 +16,7 @@ var indNum = 0;
 var genNum = 0;
 
 for (var i = 0; i < GENERATION_SIZE; i++) {
-	gen.push(new Architect.Perceptron(4, 5, 1));
+	gen.push(new Architect.Perceptron(3, 4, 1));
 	gen[i] = gen[i].toJSON();
 	gen[i] = mutate(gen[i], 1, "connections", "weight");
 	gen[i] = mutate(gen[i], 1, "neurons", "bias");
@@ -41,7 +41,7 @@ function randBetween(a, b) {
 
 function makeMove() {
 	var z = getInputs();
-	var networkOutput = gen[indNum].activate([z.speed, z.next, z.size, z.height])[0];
+	var networkOutput = gen[indNum].activate([z.speed, z.next, z.size])[0];
 	document.getElementById("outputvar").innerHTML = networkOutput.toFixed(4);
 	if (networkOutput < DUCK_THRESHOLD) {
 		keyUpJump();

@@ -17,9 +17,9 @@ function getInputs() {
 		size: curSize/100
 	};
 	ret.size *= ret.next;
-	document.getElementById("speedvar").innerHTML = "speed = " + ret.speed.toFixed(4);
-	document.getElementById("nextvar").innerHTML = "next = " + ret.next.toFixed(4);
-	document.getElementById("sizevar").innerHTML = "size = " + ret.size.toFixed(4);
+	document.getElementById("speedvar").innerHTML = "spd = " + ret.speed.toFixed(4);
+	document.getElementById("nextvar").innerHTML = "nxt = " + ret.next.toFixed(4);
+	document.getElementById("sizevar").innerHTML = "sze = " + ret.size.toFixed(4);
 	return ret;
 }
 
@@ -30,7 +30,7 @@ function getStates() {
 		paused: runner.paused,
 		dist: runner.distanceRan/40
 	};
-	document.getElementById("distvar").innerHTML = "dist = " + ret.dist.toFixed(4);
+	document.getElementById("distvar").innerHTML = "dst = " + ret.dist.toFixed(3);
 	return ret;
 }
 

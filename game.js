@@ -385,7 +385,7 @@
                 this.createTouchController();
             }
 
-            this.startListening();
+            // this.startListening();
             this.update();
 
             window.addEventListener(Runner.events.RESIZE,

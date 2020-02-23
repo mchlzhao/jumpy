@@ -1,5 +1,9 @@
 # jumpy
 
+## Finished Model
+
+To view the finished neural network playing, click [here](https://mchlzhao.github.io/jumpy/).
+
 ## Introduction
 
 This is a high school project I completed in 2017. Using [neuroevolution](https://en.wikipedia.org/wiki/Neuroevolution), a Perceptron was successfully trained to play the [Google Chrome dinosaur game](chrome://dino/) indefinitely.
